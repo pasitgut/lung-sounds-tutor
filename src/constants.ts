@@ -1,4 +1,4 @@
-export const SESSION_NAME = "";
+export const SESSION_NAME = "sessionid";
 
 export const HOME_ROUTE = "/home";
 
