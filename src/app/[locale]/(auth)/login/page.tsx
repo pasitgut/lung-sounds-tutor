@@ -12,8 +12,6 @@ import {
 export default function LoginPage() {
   return (
     <div className="relative min-h-screen w-full bg-[#F0F8FF] overflow-hidden flex flex-col items-center justify-center font-sans">
-      {/* --- ส่วนพื้นหลัง (Background Pattern) --- */}
-      {/* ใช้ไอคอนวางกระจายเพื่อเลียนแบบ pattern ในภาพ */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <Stethoscope className="absolute top-10 left-20 text-blue-400 w-12 h-12 -rotate-12" />
         <HeartPulse className="absolute top-12 left-1/2 text-blue-300 w-10 h-10" />
@@ -23,24 +21,19 @@ export default function LoginPage() {
         <ClipboardList className="absolute bottom-20 right-20 text-blue-400 w-10 h-10" />
         <Thermometer className="absolute bottom-32 left-16 text-blue-300 w-8 h-8" />
         <Activity className="absolute bottom-10 left-1/2 text-sky-300 w-16 h-16" />
-        {/* เพิ่มไอคอนตกแต่งเพิ่มเติมได้ตามต้องการ */}
+
         <div className="absolute top-40 right-1/4 text-blue-200 text-4xl">
           mo
         </div>
         <div className="absolute bottom-40 left-1/3 text-pink-200 w-6 h-6 rounded-full border-2 border-pink-200"></div>
       </div>
 
-      {/* --- ส่วนเนื้อหาหลัก (Main Content) --- */}
       <div className="z-10 flex flex-col items-center gap-12 w-full max-w-4xl px-4">
-        {/* Logo Section */}
-        {/* หมายเหตุ: ในงานจริง แนะนำให้ใช้ <img src="/path/to/logo.png" /> แทนส่วนนี้ */}
         <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
-          {/* หมวกพยาบาล (จำลอง) */}
           <div className="relative transform -rotate-12">
             <div className="w-16 h-12 bg-white border-2 border-sky-900 rounded-t-xl flex items-center justify-center shadow-sm">
               <span className="text-sky-900 font-bold text-xl">+</span>
             </div>
-            {/* หัวใจเล็กๆ ข้างหมวก */}
             <span className="absolute -top-2 -left-2 text-sky-400 text-xs">
               ♥
             </span>
@@ -49,9 +42,7 @@ export default function LoginPage() {
             </span>
           </div>
 
-          {/* ข้อความ Logo: Lung Sound Learn */}
           <div className="flex items-end gap-1 select-none">
-            {/* คำว่า Lung (จำลองตัว L เป็นหูฟังแพทย์) */}
             <div className="relative flex items-end">
               <Stethoscope
                 className="w-16 h-16 text-sky-700 -mr-2 mb-1"
@@ -62,7 +53,6 @@ export default function LoginPage() {
               </span>
             </div>
 
-            {/* คำว่า Sound (มีคลื่นเสียง) */}
             <div className="relative mx-1">
               <span className="absolute -top-4 left-0 right-0 flex justify-center">
                 <Activity className="w-8 h-4 text-sky-400" />
@@ -75,20 +65,17 @@ export default function LoginPage() {
               </span>
             </div>
 
-            {/* คำว่า Learn (มีจุดเชื่อมโยง) */}
             <div className="relative">
               <span className="text-6xl md:text-7xl font-bold text-sky-800 tracking-tight">
                 Learn
               </span>
-              {/* จุดเชื่อมโยงจำลอง */}
+
               <div className="absolute top-1/2 -right-4 w-2 h-2 bg-sky-400 rounded-full"></div>
               <div className="absolute top-1/3 -right-2 w-1 h-1 bg-sky-400 rounded-full"></div>
             </div>
           </div>
 
-          {/* ตรามหาวิทยาลัย (Placeholder) */}
           <div className="w-20 h-20 md:w-24 md:h-24 bg-sky-100 rounded-full border-2 border-sky-200 flex items-center justify-center overflow-hidden">
-            {/* ในงานจริงใส่: <img src="/kku-logo.png" alt="KKU Logo" className="w-full h-full object-cover" /> */}
             <div className="text-center text-[10px] text-sky-800 leading-tight">
               <span className="block font-bold">มหาวิทยาลัย</span>
               <span className="block font-bold">ขอนแก่น</span>

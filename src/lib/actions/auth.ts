@@ -4,12 +4,12 @@ import { HOME_ROUTE, LOGIN_ROUTE, SESSION_NAME } from "@/constants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export const createSession = async (uid: string) => {
+export const createSession = async (token: string) => {
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_NAME, uid, {
+  cookieStore.set(SESSION_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 60 * 24 * 5,
     path: "/",
     sameSite: "lax",
   });

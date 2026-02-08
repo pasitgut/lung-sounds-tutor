@@ -1,6 +1,7 @@
 "use client";
 
 import { auth } from "@/app/firebase/auth";
+import { createSession, removeSession } from "@/lib/actions/auth";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -19,10 +20,18 @@ export function AuthProviderContext({ children }: AuthProviderContextProps) {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      if (u) {
-        setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        if (!currentUser.email?.endsWith("@kkumail.com")) {
+          await auth.signOut();
+          return;
+        }
+
+        const token = await currentUser.getIdToken();
+        await createSession(token);
+        setUser(currentUser);
       } else {
+        await removeSession();
         setUser(null);
       }
 
