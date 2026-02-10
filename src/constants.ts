@@ -1,6 +1,6 @@
 export const SESSION_NAME = "session";
 
-export const HOME_ROUTE = "/home";
+export const HOME_ROUTE = "/";
 export const LEARNING_ROUTE = "/learning";
 export const POSTTEST_ROUTE = "/post-test";
 export const PRETEST_ROUTE = "/pre-test";

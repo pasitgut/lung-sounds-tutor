@@ -25,30 +25,30 @@ const protectedRoutes = [
 ];
 
 export default function proxy(request: NextRequest) {
-  const session = request.cookies.get(SESSION_NAME)?.value;
-  const { pathname } = request.nextUrl;
+  // const session = request.cookies.get(SESSION_NAME)?.value;
+  // const { pathname } = request.nextUrl;
 
-  const locale =
-    ["th", "en"].find(
-      (l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`),
-    ) ?? "th";
+  // const locale =
+  //   ["th", "en"].find(
+  //     (l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`),
+  //   ) ?? "th";
 
-  const pathnameWithoutLocale = pathname.replace(
-    new RegExp(`^/(${["th", "en"].join("|")})`),
-    "",
-  );
+  // const pathnameWithoutLocale = pathname.replace(
+  //   new RegExp(`^/(${["th", "en"].join("|")})`),
+  //   "",
+  // );
 
-  if (!session && protectedRoutes.includes(pathnameWithoutLocale)) {
-    return NextResponse.redirect(
-      new URL(`/${locale}/${LOGIN_ROUTE}`, request.nextUrl),
-    );
-  }
+  // if (!session && protectedRoutes.includes(pathnameWithoutLocale)) {
+  //   return NextResponse.redirect(
+  //     new URL(`/${locale}/${LOGIN_ROUTE}`, request.nextUrl),
+  //   );
+  // }
 
-  if (session && pathnameWithoutLocale === LOGIN_ROUTE) {
-    return NextResponse.redirect(
-      new URL(`/${locale}/${HOME_ROUTE}`, request.nextUrl),
-    );
-  }
+  // if (session && pathnameWithoutLocale === LOGIN_ROUTE) {
+  //   return NextResponse.redirect(
+  //     new URL(`/${locale}/${HOME_ROUTE}`, request.nextUrl),
+  //   );
+  // }
 
   return intlMiddleware(request);
 }
