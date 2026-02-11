@@ -9,9 +9,11 @@ export default function LungSoundLanding() {
       <main className="container mx-auto px-6 lg:px-12 py-10  relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
-            <h1 className="text-4xl lg:text-5xl font-bold text-[#008CC9]">
+            <h1 className="text-4xl lg:text-5xl text-[#008CC9]">
               How to use the <br />
-              <span className="text-[#008CC9]">Lung Sound Learn App</span>
+              <span className="text-[#008CC9] font-black">
+                Lung Sound Learn App
+              </span>
             </h1>
 
             <p className="text-gray-600 leading-relaxed text-sm lg:text-base max-w-xl mx-auto lg:mx-0">
