@@ -19,7 +19,6 @@ export default function LearningMediaPage() {
 
   return (
     <div className="min-h-screen bg-[#F0F8FF] relative overflow-hidden font-sans">
-      {/* Background Pattern (Optional - ใช้ CSS Gradient หรือรูปภาพจางๆ) */}
       <div className="absolute inset-0 z-0 opacity-30 pointer-events-none bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-blue-100 to-transparent"></div>
 
       {/* Main Container */}
