@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/layout/Navbar";
 import Pagination from "@/components/quiz/Pagination";
 import QuestionCard from "@/components/quiz/QuestionCard";
 import ScoreSummary from "@/components/quiz/ScoreSummary";
