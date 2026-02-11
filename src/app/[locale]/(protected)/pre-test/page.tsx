@@ -29,7 +29,7 @@ export default function PreTestPage() {
 
   return (
     <div className="min-h-screen bg-[#F0F6FF] font-sans text-slate-800 pb-20">
-      {/*<Navbar />*/}
+      <Navbar />
 
       {isFinished ? (
         <ScoreSummary score={score} totalQuestions={questions.length} />

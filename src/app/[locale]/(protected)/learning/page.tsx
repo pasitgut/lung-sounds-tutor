@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/layout/Navbar";
 import InfoPanel from "@/components/learning/InfoPanel";
 import SoundMenu from "@/components/learning/SoundMenu";
 import { useState } from "react";
@@ -24,7 +25,7 @@ export default function LearningMediaPage() {
       {/* Main Container */}
       <div className="relative z-10 container mx-auto px-4 lg:px-8 max-w-360">
         {/* Navbar */}
-        {/*<Navbar />*/}
+        <Navbar />
 
         {/* Grid Layout Content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-4 lg:mt-8 items-start h-[calc(100vh-120px)]">

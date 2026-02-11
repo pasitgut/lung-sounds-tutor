@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/layout/Navbar";
 import Pagination from "@/components/quiz/Pagination";
 import QuestionCard from "@/components/quiz/QuestionCard";
 import ScoreSummary from "@/components/quiz/ScoreSummary";
@@ -29,7 +30,7 @@ export default function PostTestPage() {
 
   return (
     <div className="min-h-screen bg-[#F0F6FF] font-sans text-slate-800 pb-20">
-      {/*<Navbar />*/}
+      <Navbar />
 
       {isFinished ? (
         <ScoreSummary score={score} totalQuestions={questions.length} />
