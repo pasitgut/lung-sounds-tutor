@@ -24,23 +24,29 @@ export function AuthProviderContext({ children }: AuthProviderContextProps) {
   const { fetchProgress } = useProgressStore();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        if (!currentUser.email?.endsWith("@kkumail.com")) {
-          await auth.signOut();
-          return;
+      try {
+        if (currentUser) {
+          if (!currentUser.email?.endsWith("@kkumail.com")) {
+            await auth.signOut();
+            setUser(null);
+            return;
+          }
+
+          const token = await currentUser.getIdToken();
+          await createSession(token);
+          setUser(currentUser);
+
+          await fetchProgress(currentUser.uid);
+        } else {
+          await removeSession();
+          setUser(null);
         }
-
-        const token = await currentUser.getIdToken();
-        await createSession(token);
-        setUser(currentUser);
-
-        fetchProgress(currentUser.uid);
-      } else {
-        await removeSession();
+      } catch (error) {
+        console.error("Auth Error: ", error);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
     return () => unsubscribe();

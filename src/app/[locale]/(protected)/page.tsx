@@ -1,7 +1,16 @@
+"use client";
+
 import Navbar from "@/components/layout/Navbar";
 import Image from "next/image";
 import lung from "@/../public/images/lung-home.png";
+import { useProgressStore } from "@/store/useProgressStore";
+import Loading from "@/components/layout/Loading";
 export default function LungSoundLanding() {
+  const { isLoading, isPretestDone, isSimulationDone } = useProgressStore();
+
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans">
       <div className="absolute inset-0 pointer-events-none opacity-10"></div>
@@ -31,11 +40,31 @@ export default function LungSoundLanding() {
               <button className="px-6 py-2 rounded-full bg-[#008CC9] text-white font-medium hover:bg-[#007bb5] transition shadow-md min-w-30">
                 Learning materials
               </button>
-              <button className="px-6 py-2 rounded-full bg-gray-400 text-white font-medium hover:bg-gray-500 transition shadow-md min-w-30">
+              <button
+                disabled={!isPretestDone}
+                className={`
+                  px-6 py-2 rounded-full font-medium transition shadow-md min-w-30
+                  ${
+                    !isPretestDone
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
+                      : " bg-[#008CC9] hover:bg-[#007bb5] text-white cursor-pointer"
+                  }
+                  `}
+              >
                 Simulation
               </button>
 
-              <button className="px-6 py-2 rounded-full bg-gray-400 text-white font-medium hover:bg-gray-500 transition shadow-md min-w-30">
+              <button
+                disabled={!isSimulationDone}
+                className={`
+                  px-6 py-2 rounded-full font-medium transition shadow-md min-w-30
+                  ${
+                    !isSimulationDone
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
+                      : " bg-[#008CC9] hover:bg-[#007bb5] text-white cursor-pointer"
+                  }
+                  `}
+              >
                 Post-test
               </button>
             </div>
