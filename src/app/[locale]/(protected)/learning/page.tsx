@@ -16,7 +16,11 @@ const soundList = [
 ];
 export default function LearningMediaPage() {
   const [activeSound, setActiveSound] = useState<string>(soundList[0]);
-
+  const [currentModel, setCurrentModel] = useState<string>("1");
+  const handleSwitchModel = () => {
+    setCurrentModel((model) => (model === "1" ? (model = "2") : (model = "1")));
+    console.log("Current Model: ", currentModel);
+  };
   return (
     <div className="min-h-screen bg-[#F0F8FF] relative overflow-hidden font-sans">
       <div className="absolute inset-0 z-0 opacity-30 pointer-events-none bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-blue-100 to-transparent"></div>
@@ -40,11 +44,15 @@ export default function LearningMediaPage() {
           {/* Center: Lung Model */}
           <div className="lg:col-span-5 flex items-center justify-center h-full">
             {/*<LungModel />*/}
+            <div className="text-black">Lung Model</div>
           </div>
 
           {/* Right: Info Panel */}
           <div className="lg:col-span-4 flex flex-col justify-center h-full pb-10">
-            <InfoPanel activeSound={activeSound} />
+            <InfoPanel
+              activeSound={activeSound}
+              switchModel={handleSwitchModel}
+            />
           </div>
         </div>
       </div>

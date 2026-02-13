@@ -3,6 +3,7 @@ import { Volume2, User, Stethoscope } from "lucide-react";
 
 interface InfoPanelProps {
   activeSound: string;
+  switchModel: () => void;
 }
 
 const contentData: Record<string, { general: string; nursing: string }> = {
@@ -58,7 +59,7 @@ const nursingSounds = [
   "Bronchial",
 ];
 
-const InfoPanel: React.FC<InfoPanelProps> = ({ activeSound }) => {
+const InfoPanel: React.FC<InfoPanelProps> = ({ activeSound, switchModel }) => {
   const [activeTab, setActiveTab] = useState<"general" | "nursing">("general");
 
   const hasNursingContent = nursingSounds.includes(activeSound);
@@ -100,7 +101,9 @@ const InfoPanel: React.FC<InfoPanelProps> = ({ activeSound }) => {
           </div>
         </div>
         <div className="text-[#004e64]">
-          <User className="h-12 w-12" />
+          <button onClick={switchModel}>
+            <User className="h-12 w-12" />
+          </button>
         </div>
       </div>
 

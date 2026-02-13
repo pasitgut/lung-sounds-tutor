@@ -18,17 +18,20 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   return (
     <div className="mb-16">
       {/* Question Text Header */}
-      <div className="bg-white/50 rounded-xl p-6 mb-8 border border-blue-100/50 backdrop-blur-sm shadow-sm">
-        <h2 className="text-2xl font-bold text-[#1E74BC] leading-relaxed">
+      <div className="p-6 ">
+        <h2 className="flex text-2xl font-bold text-[#1E74BC] leading-relaxed">
           <span className="mr-2">{index + 1}.</span>
-          {question.text}
-          <span className="block mt-2 text-lg font-normal text-blue-400">
-            ({" "}
-            {question.type === "multiple"
-              ? "เลือกได้มากกว่า 1 ข้อ"
-              : "เลือกตอบ 1 ข้อ"}{" "}
-            )
-          </span>
+          <div className="flex gap-2 ">
+            {" "}
+            {question.text}
+            <span className="block mt-2 text-lg font-normal text-blue-400">
+              ({" "}
+              {question.type === "multiple"
+                ? "เลือกได้มากกว่า 1 ข้อ"
+                : "เลือกตอบ 1 ข้อ"}{" "}
+              )
+            </span>{" "}
+          </div>
         </h2>
       </div>
 

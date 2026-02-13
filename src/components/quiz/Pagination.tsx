@@ -32,14 +32,15 @@ const Pagination: React.FC<PaginationProps> = ({
 
         if (isActive) {
           btnClass +=
-            "bg-[#1E74BC] text-white shadow-md scale-110 ring-2 ring-blue-200";
+            "bg-[#1E74BC] text-white shadow-md scale-110 ring-2 ring-blue-200 cursor-pointer";
         } else if (isLocked) {
           btnClass += "bg-gray-200 text-gray-400 cursor-not-allowed";
         } else if (hasAnswer) {
-          btnClass += "bg-blue-100 text-[#1E74BC] hover:bg-blue-200";
+          btnClass +=
+            "bg-blue-100 text-[#1E74BC] hover:bg-blue-200 cursor-pointer";
         } else {
           btnClass +=
-            "bg-white border-2 border-[#1E74BC] text-[#1E74BC] hover:bg-blue-50";
+            "bg-white border-2 border-[#1E74BC] text-[#1E74BC] hover:bg-blue-50 cursor-pointer";
         }
 
         return (

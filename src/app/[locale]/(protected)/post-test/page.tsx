@@ -6,6 +6,7 @@ import QuestionCard from "@/components/quiz/QuestionCard";
 import ScoreSummary from "@/components/quiz/ScoreSummary";
 import { allQuestions } from "@/data/questions";
 import { useQuiz } from "@/hooks/useQuiz";
+import { useProgressStore } from "@/store/useProgressStore";
 
 export default function PostTestPage() {
   const {
@@ -20,6 +21,10 @@ export default function PostTestPage() {
     goToQuestion,
     handleSubmit,
   } = useQuiz(allQuestions);
+  const { isPretestDone, isSimulationDone } = useProgressStore();
+  if (!isPretestDone && !isSimulationDone) {
+    return <div>คุณยังไม่ปลดล็อค module นี้</div>;
+  }
 
   if (!currentQuestion && !isFinished)
     return (
@@ -39,15 +44,6 @@ export default function PostTestPage() {
           {/* Header Title */}
           <div className="relative text-center mb-10">
             <h1 className="text-4xl font-bold text-[#1E74BC]">Post-test</h1>
-            <div className="absolute right-0 top-1 text-sm font-semibold">
-              <span className="text-[#1E74BC] border-b-2 border-[#1E74BC] cursor-pointer">
-                TH
-              </span>
-              <span className="text-gray-400 mx-1">/</span>
-              <span className="text-gray-400 hover:text-[#1E74BC] cursor-pointer transition-colors">
-                ENG
-              </span>
-            </div>
           </div>
 
           <QuestionCard

@@ -36,12 +36,12 @@ export default function LungSoundLanding() {
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <Link href="pre-test">
-                <button className="px-6 py-2 rounded-full bg-white border-2 border-[#008CC9] text-[#008CC9] font-medium hover:bg-slate-50 transition shadow-sm min-w-40">
+                <button className="cursor-pointer px-6 py-2 rounded-full bg-white border-2 border-[#008CC9] text-[#008CC9] font-medium hover:bg-slate-50 transition shadow-sm min-w-40">
                   Pre-test
                 </button>
               </Link>
               <Link href="/learning">
-                <button className="px-6 py-2 rounded-full bg-[#008CC9] text-white font-medium hover:bg-[#007bb5] transition shadow-md min-w-30">
+                <button className="cursor-pointer px-6 py-2 rounded-full bg-[#008CC9] text-white font-medium hover:bg-[#007bb5] transition shadow-md min-w-30">
                   Learning materials
                 </button>
               </Link>

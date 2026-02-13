@@ -19,11 +19,6 @@ export default function LoginPage() {
     try {
       const result = await signInWithGoogle();
 
-      if (!result) {
-        setError("Login Failed");
-        throw new Error("Login failed");
-      }
-
       const token = await result.getIdToken();
       createSession(token);
     } catch (error: any) {
@@ -31,11 +26,11 @@ export default function LoginPage() {
       console.error("Error Code: ", error.code);
       if (error.code === "auth/popup-closed-by-user") {
         console.error("Popup closed by user");
-      } else {
-        setError(
-          error.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ โปรดลองใหม่อีกครั้ง",
-        );
+        return;
       }
+      setError(
+        error.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ โปรดลองใหม่อีกครั้ง",
+      );
     } finally {
       setIsLoading(false);
     }

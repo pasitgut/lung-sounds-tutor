@@ -39,7 +39,7 @@ export default function PreTestPage() {
           {/* Header Title */}
           <div className="relative text-center mb-10">
             <h1 className="text-4xl font-bold text-[#1E74BC]">Per-test</h1>
-            <div className="absolute right-0 top-1 text-sm font-semibold">
+            {/*<div className="absolute right-0 top-1 text-sm font-semibold">
               <span className="text-[#1E74BC] border-b-2 border-[#1E74BC] cursor-pointer">
                 TH
               </span>
@@ -47,7 +47,7 @@ export default function PreTestPage() {
               <span className="text-gray-400 hover:text-[#1E74BC] cursor-pointer transition-colors">
                 ENG
               </span>
-            </div>
+            </div>*/}
           </div>
 
           <QuestionCard

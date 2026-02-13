@@ -1,313 +1,414 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
-  closestCenter,
-  defaultDropAnimationSideEffects,
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  DropAnimation,
-  KeyboardSensor,
-  PointerSensor,
-  useDroppable,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { useState } from "react";
+  ArrowRight,
+  RotateCcw,
+  CheckCircle,
+  Home,
+  FileText,
+  Stethoscope,
+} from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
+import Image from "next/image";
 
-type Item = {
-  id: string;
-  label: string;
+// --- Data & Constants ---
+const PATIENT_INFO = {
+  age: 68,
+  gender: "ชาย",
+  dx: "Acute Exacerbation with Chronic Obstructive Pulmonary Disease",
+  cc: "หายใจหอบเหนื่อย 2 วันก่อนมาโรงพยาบาล",
+  ph: "สูบบุหรี่มามากกว่า 30 ปี",
+  status:
+    "ผู้ป่วยเพศชาย นอนอยู่บนเตียง หายใจ room air เสียงหายใจยาว ใช้กล้ามเนื้อช่วยหายใจ",
 };
 
-const initialItems: Item[] = [
-  { id: "1", label: "item 1" },
-  { id: "2", label: "item 2" },
-  { id: "3", label: "item 3" },
-  { id: "4", label: "item 4" },
-  { id: "5", label: "item 5" },
+const VITALS = {
+  bp: "142/86 (104)",
+  hr: 104,
+  o2: 89,
+  rr: 26,
+  temp: 37.1,
+};
+
+const NURSING_TASKS = [
+  { id: "1", text: "ประเมินสัญญาณชีพทุก 4 ชั่วโมง" },
+  { id: "2", text: "จัดท่านอนศีรษะสูง 30 องศา" },
+  { id: "3", text: "ให้ยา Beradual 4 NB ตามแผนการรักษา" }, // สมมติว่าเป็นคีย์หลัก
+  { id: "4", text: "ให้ O2 nasal cannula 2-3 LPM" },
+  { id: "5", text: "เคาะปอด" },
+  { id: "6", text: "ติดตามผลตรวจทางห้องปฏิบัติการ เช่น ABG" },
 ];
 
-const correctOrder = ["1", "2", "3", "4", "5"];
+const CORRECT_ORDER_IDS = ["1", "2", "3", "4", "5", "6"];
 
-export default function SimPage() {
-  const [sourceItems, setSourceItems] = useState<Item[]>([...initialItems]);
-  const [targetItems, setTargetItems] = useState<Item[]>([]);
-  const [activeItem, setActiveItem] = useState<Item | null>(null);
+export default function SimulationPage({ params }: { params: { id: string } }) {
+  const [stage, setStage] = useState(1);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
-
-  const isFull = targetItems.length === initialItems.length;
-  const isAllCorrect =
-    isFull &&
-    targetItems.every((item, index) => item.id === correctOrder[index]);
-
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    const item =
-      sourceItems.find((i) => i.id === active.id) ||
-      targetItems.find((i) => i.id === active.id);
-
-    if (item) setActiveItem(item);
-  };
-
-  const findContainer = (id: string) => {
-    if (sourceItems.find((i) => i.id === id)) return "source";
-    if (targetItems.find((i) => i.id === id)) return "target";
-
-    if (id === "target-droppable") return "target";
-    return null;
-  };
-
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-
-    if (!over || active.id === over?.id) return;
-
-    const activeContainer = findContainer(active.id as string);
-    const overContainer = findContainer(over?.id as string);
-
-    if (
-      !activeContainer ||
-      !overContainer ||
-      activeContainer === overContainer
-    ) {
-      return;
-    }
-
-    if (activeContainer === "source" && overContainer === "target") {
-      setSourceItems((items) => items.filter((i) => i.id !== active.id));
-      setTargetItems((items) => {
-        const activeItem = sourceItems.find((i) => i.id === active.id);
-        if (!activeItem) return items;
-
-        const overIndex = items.findIndex((i) => i.id === over.id);
-
-        let newIndex;
-        if (over.id === "target-droppable") {
-          newIndex = items.length + 1;
-        } else {
-          const isBelowOverItem =
-            over &&
-            active.rect.current.translated &&
-            active.rect.current.translated.top >
-              over.rect.top + over.rect.height;
-
-          const modifier = isBelowOverItem ? 1 : 0;
-          newIndex = overIndex >= 0 ? overIndex + modifier : items.length + 1;
-        }
-
-        return [
-          ...items.slice(0, newIndex),
-          activeItem,
-          ...items.slice(newIndex, items.length),
-        ];
-      });
-    }
-    if (activeContainer === "target" && overContainer === "source") {
-      setTargetItems((items) => items.filter((i) => i.id !== active.id));
-      setSourceItems((items) => {
-        const activeItem = targetItems.find((i) => i.id === active.id);
-        if (!activeItem) return items;
-        return [...items, activeItem];
-      });
-    }
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    setActiveItem(null);
-
-    if (!over) return;
-
-    const activeContainer = findContainer(active.id as string);
-    const overContainer = findContainer(over?.id as string);
-
-    if (activeContainer === overContainer && activeContainer === "target") {
-      const activeIndex = targetItems.findIndex((i) => i.id === active.id);
-      const overIndex = targetItems.findIndex((i) => i.id === over?.id);
-
-      if (activeIndex !== -1 && overIndex !== -1 && activeIndex !== overIndex) {
-        setTargetItems((items) => arrayMove(items, activeIndex, overIndex));
-      }
-    }
-  };
-
-  const dropAnimation: DropAnimation = {
-    sideEffects: defaultDropAnimationSideEffects({
-      styles: {
-        active: { opacity: "0.5" },
-      },
-    }),
-  };
   return (
-    <div className="p-8 max-w-4xl mx-auto bg-white min-h-screen min-w-screen text-black">
-      <h1 className="text-2xl font-bold mb-6">Simulation: Reorder Items</h1>
+    <div className="flex flex-col min-h-screen bg-[#F0F8FF] font-sans pb-10">
+      <Navbar />
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="flex gap-8">
-          <div className="w-1/2 p-4 bg-gray-50 rounded-lg border min-h-100">
-            <h2 className="font-bold mb-4">ตัวเลือก ({sourceItems.length})</h2>
-            <SortableContext
-              items={sourceItems}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="space-y-3">
-                {sourceItems.map((item) => (
-                  <SortableItem key={item.id} id={item.id} item={item} />
-                ))}
-                {sourceItems.length === 0 && (
-                  <div className="text-gray-400 text-center mt-10">
-                    ไม่เหลือตัวเลือกแล้ว
-                  </div>
-                )}
-              </div>
-            </SortableContext>
-          </div>
-
-          <div className="w-1/2 p-4 bg-blue-50 rounded-lg border min-h-100">
-            <h2 className="font-bold mb-4">
-              ลำดับคำตอบ ({targetItems.length}/5)
-            </h2>
-
-            <SortableContext
-              items={targetItems}
-              strategy={verticalListSortingStrategy}
-            >
-              <TargetDroppableArea>
-                {targetItems.map((item, index) => {
-                  let statusColor = "bg-white border-gray-300";
-                  if (isFull) {
-                    const isCorrect = item.id === correctOrder[index];
-                    statusColor = isCorrect
-                      ? "bg-green-100 border-green-500 text-green-800"
-                      : "bg-red-100 border-red-500 text-red-800";
-                  }
-                  return (
-                    <div key={item.id} className="flex items-center gap-2">
-                      <span className="font-bold w-6 text-gray-500">
-                        {index + 1}.
-                      </span>
-                      <SortableItem
-                        id={item.id}
-                        item={item}
-                        className={`w-full ${statusColor}`}
-                      />
-                    </div>
-                  );
-                })}
-
-                {Array.from({ length: 5 - targetItems.length }).map((_, i) => (
-                  <div
-                    key={`empty-${i}`}
-                    className="flex items-center gap-2 opacity-50"
-                  >
-                    <span className="font-bold w-6 text-gray-300">
-                      {targetItems.length + i + 1}.
-                    </span>
-                    <div className="w-full p-4 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50 text-gray-300 text-center text-sm">
-                      ลากคำตอบมาวาง
-                    </div>
-                  </div>
-                ))}
-              </TargetDroppableArea>
-            </SortableContext>
-          </div>
-        </div>
-
-        <DragOverlay dropAnimation={dropAnimation}>
-          {activeItem ? (
-            <div className="p-4 bg-blue-500 text-white rounded shadow-xl cursor-grabbing opacity-90 w-75">
-              {activeItem.label}
-            </div>
-          ) : null}
-        </DragOverlay>
-      </DndContext>
-
-      <div className="mt-8 text-center">
-        <button
-          disabled={!isAllCorrect}
-          className={`px-6 py-2 rounded font-bold text-white transition-all ${
-            isAllCorrect
-              ? "bg-green-600 hover:bg-green-700 shadow-lg"
-              : "bg-gray-300 cursor-not-allowed"
-          }`}
-        >
-          {isAllCorrect ? "ส่งคำตอบเรียบร้อย!" : "กรุณาเรียงให้ถูกต้องครบถ้วน"}
-        </button>
+      <div className="flex-1 overflow-y-auto container mx-auto px-4 lg:px-20 content-center ">
+        {stage === 1 && <Stage1_Diagnosis onNext={() => setStage(2)} />}
+        {stage === 2 && <Stage2_Ordering onNext={() => setStage(3)} />}
+        {stage === 3 && <Stage3_Success />}
       </div>
     </div>
   );
 }
 
-function TargetDroppableArea({ children }: { children: React.ReactNode }) {
-  const { setNodeRef } = useDroppable({
-    id: "target-droppable",
-  });
+function Stage1_Diagnosis({ onNext }: { onNext: () => void }) {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
 
-  return (
-    <div ref={setNodeRef} className="space-y-3 min-h-75">
-      {children}
-    </div>
-  );
-}
+  const CORRECT_ANSWER = "Coarse Crackle";
 
-function SortableItem({
-  id,
-  item,
-  className,
-}: {
-  id: string;
-  item: Item;
-  className?: string;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.3 : 1,
+  const handleSubmit = () => {
+    if (!selected) return;
+    setIsSubmitted(true);
+    if (selected === CORRECT_ANSWER) {
+      setIsCorrect(true);
+    } else {
+      setIsCorrect(false);
+    }
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className={`p-4 rounded shadow-sm border cursor-grab touch-none ${
-        className || "bg-white border-gray-200 hover:border-blue-400"
-      }`}
-    >
-      {item.label}
+    <div className="flex flex-col lg:flex-row gap-8">
+      {/* Left: Patient Info */}
+      <div className="flex-1 space-y-6">
+        <h2 className="text-3xl font-bold text-[#2D8CBA]">
+          Patient information
+        </h2>
+
+        <div className="space-y-4 text-gray-700">
+          <p className="text-xl font-bold">
+            ผู้ป่วยเพศ{PATIENT_INFO.gender} อายุ {PATIENT_INFO.age} ปี
+          </p>
+          <div className="space-y-1">
+            <p>
+              <span className="font-semibold">Dx:</span> {PATIENT_INFO.dx}
+            </p>
+            <p>
+              <span className="font-semibold">CC:</span> {PATIENT_INFO.cc}
+            </p>
+            <p>
+              <span className="font-semibold">PH:</span> {PATIENT_INFO.ph}
+            </p>
+          </div>
+          <div>
+            <p className="font-semibold mb-1">สภาพแรกพบ:</p>
+            <p className="pl-4 border-l-4 border-[#2D8CBA]">
+              {PATIENT_INFO.status}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Mid: Image */}
+      <div className="flex-1 flex justify-center content-center">
+        <div className="w-full max-w-xl aspect-video bg-gray-200 rounded-xl overflow-hidden flex items-center justify-center">
+          <Image
+            src="/images/patient-bed.png"
+            alt="Patient"
+            className="object-cover"
+            width={100}
+            height={100}
+          />
+        </div>
+      </div>
+
+      {/* Right: Monitor & Question */}
+      <div className="flex-1 w-full max-w-md mx-auto space-y-6">
+        <div className="flex gap-6 ">
+          <Monitor />
+
+          <Stethoscope size={100} color="#000000" />
+        </div>
+
+        <div className="space-y-4">
+          <p className="text-gray-500 text-sm text-center">
+            กรุณาลาก stethoscope ไปที่ปอดเพื่อเลือกคำตอบ (จำลอง)
+          </p>
+
+          <div className="space-y-3">
+            {["Fine Crackle", "Coarse Crackle", "Stridor"].map((choice) => {
+              let btnClass =
+                "border-2 border-[#2D8CBA] text-[#2D8CBA] bg-white";
+
+              if (isSubmitted) {
+                if (choice === CORRECT_ANSWER)
+                  btnClass = "bg-green-500 text-white border-green-500";
+                else if (choice === selected && choice !== CORRECT_ANSWER)
+                  btnClass = "bg-red-500 text-white border-red-500";
+                else btnClass = "border-gray-300 text-gray-400 bg-gray-100";
+              } else if (selected === choice) {
+                btnClass = "bg-[#2D8CBA] text-white";
+              }
+
+              return (
+                <button
+                  key={choice}
+                  disabled={isSubmitted}
+                  onClick={() => setSelected(choice)}
+                  className={`w-full py-3 rounded-full font-bold transition-all ${btnClass}`}
+                >
+                  <div className="flex items-center px-4">
+                    <div
+                      className={`w-4 h-4 rounded-full border border-current mr-3 ${selected === choice || (isSubmitted && choice === CORRECT_ANSWER) ? "bg-current" : ""}`}
+                    ></div>
+                    {choice}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex justify-center pt-4">
+            {!isSubmitted ? (
+              <button
+                onClick={handleSubmit}
+                disabled={!selected}
+                className="bg-[#2D8CBA] text-white px-8 py-2 rounded-full font-bold hover:bg-[#24769c] disabled:opacity-50"
+              >
+                ตรวจคำตอบ
+              </button>
+            ) : (
+              <button
+                onClick={onNext}
+                className="bg-[#2D8CBA] text-white px-8 py-2 rounded-full font-bold hover:bg-[#24769c] flex items-center gap-2"
+              >
+                ถัดไป <ArrowRight size={18} />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+
+// ----------------------------------------------------------------------
+// Stage 2: Ordering
+// ----------------------------------------------------------------------
+function Stage2_Ordering({ onNext }: { onNext: () => void }) {
+  const [availableItems, setAvailableItems] = useState(NURSING_TASKS);
+  const [selectedItems, setSelectedItems] = useState<typeof NURSING_TASKS>([]);
+
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "correct" | "incorrect"
+  >("idle");
+
+  const moveToSelected = (item: (typeof NURSING_TASKS)[0]) => {
+    if (submitStatus !== "idle") return;
+    setAvailableItems((prev) => prev.filter((i) => i.id !== item.id));
+    setSelectedItems((prev) => [...prev, item]);
+  };
+
+  const moveToAvailable = (item: (typeof NURSING_TASKS)[0]) => {
+    if (submitStatus !== "idle") return;
+    setSelectedItems((prev) => prev.filter((i) => i.id !== item.id));
+    setAvailableItems((prev) => [...prev, item]);
+  };
+
+  const checkOrder = () => {
+    if (selectedItems.length !== NURSING_TASKS.length) {
+      alert("กรุณาเลือกข้อความให้ครบทุกข้อ");
+      return;
+    }
+
+    const currentOrderIds = selectedItems.map((i) => i.id);
+    const isMatch =
+      JSON.stringify(currentOrderIds) === JSON.stringify(CORRECT_ORDER_IDS);
+
+    if (isMatch) {
+      setSubmitStatus("correct");
+    } else {
+      setSubmitStatus("incorrect");
+    }
+  };
+
+  const resetGame = () => {
+    setAvailableItems(NURSING_TASKS);
+    setSelectedItems([]);
+    setSubmitStatus("idle");
+  };
+
+  return (
+    <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
+      <div className="hidden lg:block w-1/4 max-w-[200px]">
+        <img
+          src="/images/patient-sit.png"
+          alt="Patient"
+          className="w-full object-contain"
+        />
+      </div>
+
+      {/* Main Game Area */}
+      <div className="flex-1 w-full bg-white rounded-3xl shadow-xl border-2 border-[#2D8CBA] p-6">
+        <h2 className="text-xl font-bold text-[#2D8CBA] text-center mb-2">
+          จงให้การพยาบาลผู้ป่วย พร้อมเรียงลำดับตามความสำคัญ
+        </h2>
+        <p className="text-gray-400 text-xs text-center mb-6">
+          ให้คลิกข้อความฝั่งซ้ายไปใส่ในช่องฝั่งขวา (หรือคลิกเพื่อย้ายกลับ)
+        </p>
+
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Left Column: Available */}
+          <div className="flex-1 space-y-2">
+            {availableItems.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => moveToSelected(item)}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-3 rounded-lg text-sm font-medium cursor-pointer transition-colors text-center"
+              >
+                {item.text}
+              </div>
+            ))}
+            {availableItems.length === 0 && (
+              <div className="h-full flex items-center justify-center text-gray-300 text-sm italic py-10">
+                เลือกครบแล้ว
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Selected (Slots) */}
+          <div className="flex-1 space-y-2">
+            {/* สร้าง Slot ว่างๆ รอไว้ หรือแสดงรายการที่เลือก */}
+            {Array.from({ length: NURSING_TASKS.length }).map((_, index) => {
+              const item = selectedItems[index];
+
+              // กำหนดสีตอนตรวจคำตอบ
+              let itemClass = "bg-white border-2 border-gray-200 text-gray-400"; // ว่าง
+              if (item) {
+                itemClass =
+                  "bg-gray-100 border-2 border-gray-300 text-gray-800 cursor-pointer hover:bg-red-50"; // มีของ
+                if (submitStatus === "correct")
+                  itemClass = "bg-green-500 border-green-500 text-white";
+                if (submitStatus === "incorrect")
+                  itemClass = "bg-red-500 border-red-500 text-white";
+              }
+
+              return (
+                <div
+                  key={index}
+                  onClick={() => item && moveToAvailable(item)}
+                  className={`h-[48px] rounded-lg flex items-center justify-center text-sm font-medium transition-all ${itemClass}`}
+                >
+                  {item ? item.text : ""}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Actions */}
+      <div className="w-full lg:w-auto flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center justify-center gap-6 ">
+          <Monitor />
+
+          <Stethoscope size={100} color="#000000" />
+        </div>
+        {submitStatus === "idle" && (
+          <button
+            onClick={checkOrder}
+            className="bg-[#2D8CBA] text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-[#24769c]"
+          >
+            ยืนยันคำตอบ
+          </button>
+        )}
+
+        {submitStatus === "incorrect" && (
+          <button
+            onClick={resetGame}
+            className="bg-[#2D8CBA] text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-[#24769c] flex items-center gap-2"
+          >
+            ทำอีกครั้ง <RotateCcw size={16} />
+          </button>
+        )}
+
+        {submitStatus === "correct" && (
+          <button
+            onClick={onNext}
+            className="bg-green-600 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-green-700 flex items-center gap-2 animate-bounce"
+          >
+            ถัดไป <ArrowRight size={16} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Stage 3: Success (หน้ายินดีด้วย)
+// ----------------------------------------------------------------------
+function Stage3_Success() {
+  return (
+    <div className="flex flex-col items-center justify-center pt-10 text-center animate-in fade-in zoom-in duration-500">
+      <h1 className="text-3xl md:text-4xl font-extrabold text-[#2D8CBA] mb-8">
+        ยินดีด้วยคุณผ่านการทดสอบแล้ว !!
+      </h1>
+
+      <div className="flex gap-4 mb-12">
+        <Link href="/post-test">
+          <button className="bg-[#2D8CBA] hover:bg-[#24769c] text-white px-8 py-3 rounded-full font-bold shadow-lg flex items-center gap-2">
+            Post-test <FileText size={20} />
+          </button>
+        </Link>
+        <Link href="/">
+          <button className="bg-gray-400 hover:bg-gray-500 text-white px-8 py-3 rounded-full font-bold shadow-lg flex items-center gap-2">
+            กลับหน้าหลัก <Home size={20} />
+          </button>
+        </Link>
+      </div>
+
+      <div className="relative w-full max-w-3xl flex items-end justify-center">
+        {/* Patient + Nurse Illustration */}
+        <div className="flex items-end gap-4">
+          <img
+            src="/images/patient-oxygen.png"
+            alt="Patient Recovered"
+            className="h-64 object-contain"
+          />
+          <img
+            src="/images/nurse-happy.png"
+            alt="Nurse"
+            className="h-72 object-contain"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Utility Components
+// ----------------------------------------------------------------------
+const Monitor = ({ small = false }: { small?: boolean }) => (
+  <div
+    className={`bg-black text-white rounded-xl p-4 shadow-xl border-4 border-gray-800 ${small ? "w-full lg:w-64 text-xs" : "w-full"}`}
+  >
+    <div className="flex justify-between items-center mb-2 border-b border-gray-700 pb-1">
+      <span className="text-pink-500 font-bold">♥ 142/86 (104) mmHg</span>
+    </div>
+    <div className="grid grid-cols-2 gap-y-2">
+      <div className="text-red-500 font-bold flex justify-between">
+        <span>HR</span> <span>{VITALS.hr}</span>
+      </div>
+      <div className="text-blue-400 font-bold flex justify-between">
+        <span>O2</span> <span>{VITALS.o2}%</span>
+      </div>
+      <div className="text-yellow-400 font-bold flex justify-between">
+        <span>RR</span> <span>{VITALS.rr}</span>
+      </div>
+      <div className="text-cyan-400 font-bold flex justify-between">
+        <span>Temp</span> <span>{VITALS.temp}</span>
+      </div>
+    </div>
+  </div>
+);
