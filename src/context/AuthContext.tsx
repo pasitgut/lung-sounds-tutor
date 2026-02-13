@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/components/layout/Loading";
 import { createSession, removeSession } from "@/lib/actions/auth";
 import { auth } from "@/lib/firebase/auth";
 import { useProgressStore } from "@/store/useProgressStore";
@@ -47,7 +48,7 @@ export function AuthProviderContext({ children }: AuthProviderContextProps) {
 
   return (
     <AuthContext.Provider value={{ user }}>
-      {loading ? <div>Loading...</div> : children}
+      {loading ? <Loading /> : children}
     </AuthContext.Provider>
   );
 }
