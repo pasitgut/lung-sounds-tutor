@@ -1,3 +1,4 @@
+import { db } from "@/lib/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { create } from "zustand";
 

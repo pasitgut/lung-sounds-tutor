@@ -2,7 +2,10 @@
 
 import Navbar from "@/components/layout/Navbar";
 import InfoPanel from "@/components/learning/InfoPanel";
+import LungModel from "@/components/learning/LungModel";
 import SoundMenu from "@/components/learning/SoundMenu";
+import { useLearning } from "@/hooks/useLearning";
+import { useFBX, useGLTF } from "@react-three/drei";
 import { useState } from "react";
 
 const soundList = [
@@ -15,12 +18,8 @@ const soundList = [
   "Bronchial",
 ];
 export default function LearningMediaPage() {
-  const [activeSound, setActiveSound] = useState<string>(soundList[0]);
-  const [currentModel, setCurrentModel] = useState<string>("1");
-  const handleSwitchModel = () => {
-    setCurrentModel((model) => (model === "1" ? (model = "2") : (model = "1")));
-    console.log("Current Model: ", currentModel);
-  };
+  const { activeSound, setActiveSound, handleSwitchModel, currentModel } =
+    useLearning(soundList);
   return (
     <div className="min-h-screen bg-[#F0F8FF] relative overflow-hidden font-sans">
       <div className="absolute inset-0 z-0 opacity-30 pointer-events-none bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-blue-100 to-transparent"></div>
@@ -43,8 +42,14 @@ export default function LearningMediaPage() {
 
           {/* Center: Lung Model */}
           <div className="lg:col-span-5 flex items-center justify-center h-full">
-            {/*<LungModel />*/}
-            <div className="text-black">Lung Model</div>
+            <LungModel
+              modelPath={
+                currentModel === "inside"
+                  ? `${window.location.origin}/models/inside.glb`
+                  : `${window.location.origin}/models/outside.glb`
+              }
+            />
+            {/*<div className="text-black">Lung Model</div>*/}
           </div>
 
           {/* Right: Info Panel */}

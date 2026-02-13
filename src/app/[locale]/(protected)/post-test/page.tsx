@@ -21,10 +21,10 @@ export default function PostTestPage() {
     goToQuestion,
     handleSubmit,
   } = useQuiz(allQuestions);
-  const { isPretestDone, isSimulationDone } = useProgressStore();
-  if (!isPretestDone && !isSimulationDone) {
-    return <div>คุณยังไม่ปลดล็อค module นี้</div>;
-  }
+  // const { isPretestDone, isSimulationDone } = useProgressStore();
+  // if (!isPretestDone && !isSimulationDone) {
+  //   return <div>คุณยังไม่ปลดล็อค module นี้</div>;
+  // }
 
   if (!currentQuestion && !isFinished)
     return (

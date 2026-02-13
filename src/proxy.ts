@@ -38,7 +38,7 @@ export default function proxy(request: NextRequest) {
     "",
   );
 
-  if (!session && protectedRoutes.includes(pathnameWithoutLocale)) {
+  if (!session && pathnameWithoutLocale !== LOGIN_ROUTE) {
     return NextResponse.redirect(
       new URL(`/${locale}/${LOGIN_ROUTE}`, request.nextUrl),
     );
@@ -54,5 +54,5 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next|favicon.ico|robots.txt|sitemap.xml|.*\\..*).*)"],
 };

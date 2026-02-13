@@ -1,25 +1,49 @@
-import { User } from "firebase/auth";
-import { UserProfile } from "firebase/auth/web-extension";
 import { create } from "zustand";
 
 interface UserState {
-  user: User | null;
-  profile: UserProfile | null;
-  isLoading: boolean;
+  uid: string | null;
+  email: string | null;
+  displayName: string | null;
+  progress: {
+    pretestDone: boolean;
+    simulationDone: boolean;
+    posttestDone: boolean;
+    certificate: boolean;
+  };
 
-  setUser: (user: User | null) => void;
-  setProfile: (profile: UserProfile | null) => void;
-  setLoading: (loading: boolean) => void;
-  clearUser: () => void;
+  setAuth: (uid: string, email: string, displayName: string) => void;
+  setProgress: (
+    type: "pretestDone" | "simulationDone" | "posttestDone" | "certificate",
+    isDone: boolean,
+  ) => void;
+  clearAuth: () => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
-  user: null,
-  profile: null,
-  isLoading: true,
+  uid: null,
+  email: null,
+  displayName: null,
+  progress: {
+    pretestDone: false,
+    simulationDone: false,
+    posttestDone: false,
+    certificate: false,
+  },
 
-  setUser: (user) => set({ user }),
-  setProfile: (profile) => set({ profile }),
-  setLoading: (isLoading) => set({ isLoading }),
-  clearUser: () => set({ user: null, profile: null, isLoading: false }),
+  setAuth: (uid, email, displayName) => set({ uid, email, displayName }),
+  setProgress: (type, isDone) =>
+    set((state) => ({
+      progress: { ...state.progress, [`${type}`]: isDone },
+    })),
+  clearAuth: () =>
+    set({
+      uid: null,
+      email: null,
+      progress: {
+        pretestDone: false,
+        simulationDone: false,
+        posttestDone: false,
+        certificate: false,
+      },
+    }),
 }));

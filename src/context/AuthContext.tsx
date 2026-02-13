@@ -1,9 +1,7 @@
 "use client";
 
 import Loading from "@/components/layout/Loading";
-import { createSession, removeSession } from "@/lib/actions/auth";
 import { auth } from "@/lib/firebase/firebase";
-import { useProgressStore } from "@/store/useProgressStore";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -21,13 +19,10 @@ export function AuthProviderContext({ children }: AuthProviderContextProps) {
   const [user, setUser] = useState<User | null>(null);
   const [initialized, setInitialized] = useState<boolean>(false);
 
-  // const { fetchProgress } = useProgressStore();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-
-        // fetchProgress(currentUser.uid);
       }
 
       setInitialized(true);
@@ -35,8 +30,7 @@ export function AuthProviderContext({ children }: AuthProviderContextProps) {
 
     return () => unsubscribe();
   }, []);
-
-  if (!initialized) return null;
+  if (!initialized) return <Loading />;
   return (
     <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
   );

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Volume2, User, Stethoscope } from "lucide-react";
+import AudioPlayer from "../audio/AudioPlayer";
 
 interface InfoPanelProps {
   activeSound: string;
@@ -159,7 +160,8 @@ const InfoPanel: React.FC<InfoPanelProps> = ({ activeSound, switchModel }) => {
 
           {/* Audio Player Section */}
           <div className="mt-6 flex items-center gap-4 text-gray-700 font-bold border-t pt-4">
-            <Volume2 className="text-[#2b4eff] w-8 h-8 cursor-pointer hover:scale-110 transition-transform" />
+            {/*<Volume2 className="text-[#2b4eff] w-8 h-8 cursor-pointer hover:scale-110 transition-transform" />*/}
+            <AudioPlayer src="/audios/sound-test.mp3" />
             <span>{activeSound}</span>
           </div>
         </div>

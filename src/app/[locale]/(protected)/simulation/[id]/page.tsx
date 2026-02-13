@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
   RotateCcw,
-  CheckCircle,
   Home,
   FileText,
   Stethoscope,
@@ -13,7 +12,6 @@ import {
 import Navbar from "@/components/layout/Navbar";
 import Image from "next/image";
 
-// --- Data & Constants ---
 const PATIENT_INFO = {
   age: 68,
   gender: "ชาย",
@@ -35,7 +33,7 @@ const VITALS = {
 const NURSING_TASKS = [
   { id: "1", text: "ประเมินสัญญาณชีพทุก 4 ชั่วโมง" },
   { id: "2", text: "จัดท่านอนศีรษะสูง 30 องศา" },
-  { id: "3", text: "ให้ยา Beradual 4 NB ตามแผนการรักษา" }, // สมมติว่าเป็นคีย์หลัก
+  { id: "3", text: "ให้ยา Beradual 4 NB ตามแผนการรักษา" },
   { id: "4", text: "ให้ O2 nasal cannula 2-3 LPM" },
   { id: "5", text: "เคาะปอด" },
   { id: "6", text: "ติดตามผลตรวจทางห้องปฏิบัติการ เช่น ABG" },
@@ -239,11 +237,13 @@ function Stage2_Ordering({ onNext }: { onNext: () => void }) {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
-      <div className="hidden lg:block w-1/4 max-w-[200px]">
-        <img
+      <div className="hidden lg:block w-1/4 max-w-50">
+        <Image
           src="/images/patient-sit.png"
           alt="Patient"
           className="w-full object-contain"
+          width={1000}
+          height={1000}
         />
       </div>
 
@@ -275,17 +275,14 @@ function Stage2_Ordering({ onNext }: { onNext: () => void }) {
             )}
           </div>
 
-          {/* Right Column: Selected (Slots) */}
           <div className="flex-1 space-y-2">
-            {/* สร้าง Slot ว่างๆ รอไว้ หรือแสดงรายการที่เลือก */}
             {Array.from({ length: NURSING_TASKS.length }).map((_, index) => {
               const item = selectedItems[index];
 
-              // กำหนดสีตอนตรวจคำตอบ
-              let itemClass = "bg-white border-2 border-gray-200 text-gray-400"; // ว่าง
+              let itemClass = "bg-white border-2 border-gray-200 text-gray-400";
               if (item) {
                 itemClass =
-                  "bg-gray-100 border-2 border-gray-300 text-gray-800 cursor-pointer hover:bg-red-50"; // มีของ
+                  "bg-gray-100 border-2 border-gray-300 text-gray-800 cursor-pointer hover:bg-red-50";
                 if (submitStatus === "correct")
                   itemClass = "bg-green-500 border-green-500 text-white";
                 if (submitStatus === "incorrect")
@@ -296,7 +293,7 @@ function Stage2_Ordering({ onNext }: { onNext: () => void }) {
                 <div
                   key={index}
                   onClick={() => item && moveToAvailable(item)}
-                  className={`h-[48px] rounded-lg flex items-center justify-center text-sm font-medium transition-all ${itemClass}`}
+                  className={`h-12 rounded-lg flex items-center justify-center text-sm font-medium transition-all ${itemClass}`}
                 >
                   {item ? item.text : ""}
                 </div>
@@ -345,7 +342,7 @@ function Stage2_Ordering({ onNext }: { onNext: () => void }) {
 }
 
 // ----------------------------------------------------------------------
-// Stage 3: Success (หน้ายินดีด้วย)
+// Stage 3: Success
 // ----------------------------------------------------------------------
 function Stage3_Success() {
   return (
