@@ -1,3 +1,4 @@
+import { Option } from "@/types/quiz";
 import React from "react";
 
 interface OptionItemProps {

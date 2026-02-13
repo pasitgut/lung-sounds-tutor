@@ -2,6 +2,7 @@
 
 import { createSession, removeSession } from "@/lib/actions/auth";
 import { auth } from "@/lib/firebase/auth";
+import { useProgressStore } from "@/store/useProgressStore";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -19,6 +20,7 @@ export function AuthProviderContext({ children }: AuthProviderContextProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const { fetchProgress } = useProgressStore();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
@@ -30,6 +32,8 @@ export function AuthProviderContext({ children }: AuthProviderContextProps) {
         const token = await currentUser.getIdToken();
         await createSession(token);
         setUser(currentUser);
+
+        fetchProgress(currentUser.uid);
       } else {
         await removeSession();
         setUser(null);
