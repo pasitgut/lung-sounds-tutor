@@ -6,6 +6,9 @@ import { redirect } from "next/navigation";
 
 export const createSession = async (token: string) => {
   const cookieStore = await cookies();
+
+  const existingSession = cookieStore.get(SESSION_NAME);
+  if (existingSession) return;
   cookieStore.set(SESSION_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

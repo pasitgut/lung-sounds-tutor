@@ -32,8 +32,8 @@ export function AuthProviderContext({ children }: AuthProviderContextProps) {
             return;
           }
 
-          const token = await currentUser.getIdToken();
-          await createSession(token);
+          // const token = await currentUser.getIdToken();
+          // await createSession(token);
           setUser(currentUser);
 
           await fetchProgress(currentUser.uid);

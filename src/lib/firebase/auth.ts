@@ -5,6 +5,7 @@ import {
   signOut as _signOut,
 } from "firebase/auth";
 import app from "./config";
+import { removeSession } from "../actions/auth";
 
 export const auth = getAuth(app);
 
@@ -37,6 +38,7 @@ export const signInWithGoogle = async () => {
 export const signOut = async () => {
   try {
     await _signOut(auth);
+    removeSession();
   } catch (err) {
     console.error("Error signing out. ", err);
     throw err;

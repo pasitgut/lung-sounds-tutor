@@ -1,8 +1,13 @@
 import { useAuth } from "@/context/AuthContext";
+import { signOut } from "@/lib/firebase/auth";
 import { Activity, User } from "lucide-react";
 
 const Navbar = () => {
   const { user } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
+  };
   return (
     <nav className="flex justify-between items-center py-6 px-8 bg-transparent">
       {/* Logo */}
@@ -21,7 +26,9 @@ const Navbar = () => {
         <div className="flex items-center gap-2 cursor-pointer">
           <span>{user ? user.displayName : "User"}</span>
           <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md text-blue-400">
-            <User size={24} />
+            <button onClick={() => handleLogout()}>
+              <User size={24} />
+            </button>
           </div>
         </div>
       </div>

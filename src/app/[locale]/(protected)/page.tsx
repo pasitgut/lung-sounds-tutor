@@ -5,6 +5,7 @@ import Image from "next/image";
 import lung from "@/../public/images/lung-home.png";
 import { useProgressStore } from "@/store/useProgressStore";
 import Loading from "@/components/layout/Loading";
+import Link from "next/link";
 export default function LungSoundLanding() {
   const { isLoading, isPretestDone, isSimulationDone } = useProgressStore();
 
@@ -34,39 +35,47 @@ export default function LungSoundLanding() {
             </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
-              <button className="px-6 py-2 rounded-full bg-white border-2 border-[#008CC9] text-[#008CC9] font-medium hover:bg-slate-50 transition shadow-sm min-w-40">
-                Pre-test
-              </button>
-              <button className="px-6 py-2 rounded-full bg-[#008CC9] text-white font-medium hover:bg-[#007bb5] transition shadow-md min-w-30">
-                Learning materials
-              </button>
-              <button
-                disabled={!isPretestDone}
-                className={`
-                  px-6 py-2 rounded-full font-medium transition shadow-md min-w-30
-                  ${
-                    !isPretestDone
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
-                      : " bg-[#008CC9] hover:bg-[#007bb5] text-white cursor-pointer"
-                  }
-                  `}
-              >
-                Simulation
-              </button>
+              <Link href="pre-test">
+                <button className="px-6 py-2 rounded-full bg-white border-2 border-[#008CC9] text-[#008CC9] font-medium hover:bg-slate-50 transition shadow-sm min-w-40">
+                  Pre-test
+                </button>
+              </Link>
+              <Link href="/learning">
+                <button className="px-6 py-2 rounded-full bg-[#008CC9] text-white font-medium hover:bg-[#007bb5] transition shadow-md min-w-30">
+                  Learning materials
+                </button>
+              </Link>
+              <Link href="/simulation">
+                <button
+                  disabled={!isPretestDone}
+                  className={`
+                    px-6 py-2 rounded-full font-medium transition shadow-md min-w-30
+                    ${
+                      !isPretestDone
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
+                        : " bg-[#008CC9] hover:bg-[#007bb5] text-white cursor-pointer"
+                    }
+                    `}
+                >
+                  Simulation
+                </button>
+              </Link>
 
-              <button
-                disabled={!isSimulationDone}
-                className={`
-                  px-6 py-2 rounded-full font-medium transition shadow-md min-w-30
-                  ${
-                    !isSimulationDone
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
-                      : " bg-[#008CC9] hover:bg-[#007bb5] text-white cursor-pointer"
-                  }
-                  `}
-              >
-                Post-test
-              </button>
+              <Link href="/post-test">
+                <button
+                  disabled={!isSimulationDone}
+                  className={`
+                    px-6 py-2 rounded-full font-medium transition shadow-md min-w-30
+                    ${
+                      !isSimulationDone
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
+                        : " bg-[#008CC9] hover:bg-[#007bb5] text-white cursor-pointer"
+                    }
+                    `}
+                >
+                  Post-test
+                </button>
+              </Link>
             </div>
           </div>
 
