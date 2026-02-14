@@ -4,7 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Pagination from "@/components/quiz/Pagination";
 import QuestionCard from "@/components/quiz/QuestionCard";
 import ScoreSummary from "@/components/quiz/ScoreSummary";
-import { allQuestions } from "@/data/questions";
+import { posttestOne, posttestTwo } from "@/data/questions";
 import { useQuiz } from "@/hooks/useQuiz";
 import { useProgressStore } from "@/store/useProgressStore";
 
@@ -20,7 +20,7 @@ export default function PostTestPage() {
     handleOptionSelect,
     goToQuestion,
     handleSubmit,
-  } = useQuiz(allQuestions);
+  } = useQuiz([...posttestOne, ...posttestTwo]);
   // const { isPretestDone, isSimulationDone } = useProgressStore();
   // if (!isPretestDone && !isSimulationDone) {
   //   return <div>คุณยังไม่ปลดล็อค module นี้</div>;

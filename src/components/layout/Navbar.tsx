@@ -29,6 +29,7 @@ const Navbar = () => {
         <div className="flex items-center gap-4 cursor-pointer">
           <span>{user ? user.displayName : "User"}</span>
           <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md text-blue-400">
+            {/* click to logout for testing */}
             <button onClick={handleLogout}>
               <User size={24} />
             </button>

@@ -4,7 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Pagination from "@/components/quiz/Pagination";
 import QuestionCard from "@/components/quiz/QuestionCard";
 import ScoreSummary from "@/components/quiz/ScoreSummary";
-import { allQuestions } from "@/data/questions";
+import { pretestOne, pretestTwo } from "@/data/questions";
 import { useQuiz } from "@/hooks/useQuiz";
 
 export default function PreTestPage() {
@@ -19,8 +19,9 @@ export default function PreTestPage() {
     handleOptionSelect,
     goToQuestion,
     handleSubmit,
-  } = useQuiz(allQuestions);
+  } = useQuiz([...pretestOne, ...pretestTwo]);
 
+  console.log("Current Question: ", currentQuestion);
   if (!currentQuestion && !isFinished)
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F0F6FF] text-[#1E74BC]">

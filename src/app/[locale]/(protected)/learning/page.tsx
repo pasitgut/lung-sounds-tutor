@@ -16,6 +16,7 @@ const soundList = [
   "Ronchi Crackle",
   "Stridor",
   "Bronchial",
+  "Vesicular", // ???
 ];
 export default function LearningMediaPage() {
   const { activeSound, setActiveSound, handleSwitchModel, currentModel } =

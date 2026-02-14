@@ -8,7 +8,6 @@ export interface Option {
 export interface Question {
   id: number;
   text: string;
-  type: QuestionType;
   options: Option[];
   correctOption: string[];
 }

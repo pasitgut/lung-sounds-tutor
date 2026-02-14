@@ -10,7 +10,7 @@ interface UserState {
     posttestDone: boolean;
     certificate: boolean;
   };
-
+  setUserFromFirestore: (data: Partial<UserState>) => void;
   setAuth: (uid: string, email: string, displayName: string) => void;
   setProgress: (
     type: "pretestDone" | "simulationDone" | "posttestDone" | "certificate",
@@ -31,9 +31,18 @@ export const useUserStore = create<UserState>((set) => ({
   },
 
   setAuth: (uid, email, displayName) => set({ uid, email, displayName }),
+  setUserFromFirestore: (data) =>
+    set((state) => ({
+      ...state,
+      ...data,
+      progress: {
+        ...state.progress,
+        ...data.progress,
+      },
+    })),
   setProgress: (type, isDone) =>
     set((state) => ({
-      progress: { ...state.progress, [`${type}`]: isDone },
+      progress: { ...state.progress, [type]: isDone },
     })),
   clearAuth: () =>
     set({

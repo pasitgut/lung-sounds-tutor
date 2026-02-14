@@ -6,12 +6,10 @@ import lung from "@/../public/images/lung-home.png";
 import { useProgressStore } from "@/store/useProgressStore";
 import Loading from "@/components/layout/Loading";
 import Link from "next/link";
+import { useUserStore } from "@/store/useUserStore";
 export default function LungSoundLanding() {
-  const { isLoading, isPretestDone, isSimulationDone } = useProgressStore();
+  const { progress } = useUserStore();
 
-  if (isLoading) {
-    return <Loading />;
-  }
   return (
     <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans">
       <div className="absolute inset-0 pointer-events-none opacity-10"></div>
@@ -47,11 +45,11 @@ export default function LungSoundLanding() {
               </Link>
               <Link href="/simulation">
                 <button
-                  disabled={!isPretestDone}
+                  disabled={!progress.pretestDone}
                   className={`
                     px-6 py-2 rounded-full font-medium transition shadow-md min-w-30
                     ${
-                      !isPretestDone
+                      !progress.pretestDone
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
                         : " bg-[#008CC9] hover:bg-[#007bb5] text-white cursor-pointer"
                     }
@@ -63,11 +61,11 @@ export default function LungSoundLanding() {
 
               <Link href="/post-test">
                 <button
-                  disabled={!isSimulationDone}
+                  disabled={!progress.simulationDone}
                   className={`
                     px-6 py-2 rounded-full font-medium transition shadow-md min-w-30
                     ${
-                      !isSimulationDone
+                      !progress.simulationDone
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-60"
                         : " bg-[#008CC9] hover:bg-[#007bb5] text-white cursor-pointer"
                     }

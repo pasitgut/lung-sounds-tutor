@@ -23,3 +23,11 @@ export const createUserProfile = async (user: User) => {
   await setDoc(docRef, newProfile, { merge: true });
   return newProfile;
 };
+
+export const saveFirstAttemptEaxm = async () => {
+  const newResult = {
+    uid: "",
+  };
+};
+
+export const saveFirstAttemptSimulation = async () => {};

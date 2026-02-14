@@ -20,12 +20,13 @@ export const useQuiz = (sourceQuestions: Question[]) => {
   });
 
   useEffect(() => {
+    console.log("Source Questions: ", sourceQuestions);
     const shuffled = shuffleArray(sourceQuestions).slice(0, 10);
     setState((prev) => ({ ...prev, questions: shuffled }));
   }, [sourceQuestions]);
 
   const currentQuestion = state.questions[state.currentQuestionIndex];
-
+  console.log(currentQuestion);
   const maxAccessQuestion = useMemo(() => {
     const firstUnanswered = state.questions.findIndex((q) => {
       const ans = state.userAnswer[q.id];
@@ -42,8 +43,9 @@ export const useQuiz = (sourceQuestions: Question[]) => {
     setState((prev) => {
       const currentAnswers = prev.userAnswer[currentQuestion.id] || [];
       let newAnswers: string[];
+      const isMultiple = currentQuestion.correctOption.length > 1;
 
-      if (currentQuestion.type === "single") {
+      if (!isMultiple) {
         newAnswers = [optionId];
       } else {
         if (currentAnswers.includes(optionId)) {

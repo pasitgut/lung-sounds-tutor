@@ -15,6 +15,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   selectedOptions,
   onOptionSelect,
 }) => {
+  const isMultiple = question.correctOption.length > 1;
   return (
     <div className="mb-16">
       {/* Question Text Header */}
@@ -25,11 +26,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             {" "}
             {question.text}
             <span className="block mt-2 text-lg font-normal text-blue-400">
-              ({" "}
-              {question.type === "multiple"
-                ? "เลือกได้มากกว่า 1 ข้อ"
-                : "เลือกตอบ 1 ข้อ"}{" "}
-              )
+              {isMultiple ? "(เลือกตอบมากกว่า 1 คำตอบ)" : ""}
             </span>{" "}
           </div>
         </h2>
